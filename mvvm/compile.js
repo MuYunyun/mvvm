@@ -64,7 +64,7 @@ Compile.prototype = {
     const self = this
     const initText = this.vm[exp]
     this.updateText(node, initText) // 初始化
-    new Watcher(this.vm, exp, function(value) {
+    new Watcher(this.vm, exp, function(value) { // 实例化订阅者
       self.updateText(node, value)
     })
   },
@@ -82,13 +82,9 @@ Compile.prototype = {
     let val = vm[exp]
     const self = this
     this.modelUpdater(node, val)
-    new Watcher(vm, exp, function (value) { // 实例化订阅者
-      self.modelUpdater(node, value)
-    })
-
     node.addEventListener('input', function (e) {
       const newValue = e.target.value
-      self.vm[exp] = newValue // 实现数据刷新
+      self.vm[exp] = newValue // 实现 view 到 modal 的绑定
     })
   },
 
