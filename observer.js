@@ -36,7 +36,7 @@ function observe(data) {
 
 function defineReactive(data, key, value) {
   var dep = new Dep()
-  observe(value)
+  observe(value) // 遍历嵌套对象
   Object.defineProperty(data, key, {
     get: function() {
       if (Dep.target) { // 往订阅器添加订阅者
