@@ -1,6 +1,6 @@
 // Watcher 订阅者作为 observer 和 compile 之间通信的桥梁，主要做的事情是:
 // 1、在自身实例化时往订阅器(dep)里面添加自己
-// 2、待 modal 变动 dep.notice() 通知时，能调用自身的 update() 方法，并触发 Compile 中绑定的回调
+// 2、待 model 变动 dep.notice() 通知时，能调用自身的 update() 方法，并触发 Compile 中绑定的回调
 function Watcher(vm, exp, cb) {
   this.cb = cb
   this.vm = vm

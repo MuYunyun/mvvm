@@ -84,7 +84,7 @@ Compile.prototype = {
     this.modelUpdater(node, val)
     node.addEventListener('input', function (e) {
       const newValue = e.target.value
-      self.vm[exp] = newValue // 实现 view 到 modal 的绑定
+      self.vm[exp] = newValue // 实现 view 到 model 的绑定
     })
   },
 

@@ -6,7 +6,7 @@
 
 ![](http://oqhtscus0.bkt.clouddn.com/203d14fb02edc5f37ae3841a2372434b.jpg-400)
 
-在 MVVM 框架中，View(视图) 和 Modal(数据) 是不可以直接通讯的，在它们之间存在着 ViewModal 这个中间介充当着观察者的角色。当用户操作 View(视图)，ViewModal 感知到变化，然后通知 Modal 发生相应改变；反之当 Modal(数据) 发生改变，ViewModal 也能感知到变化，使 View 作出相应更新。这个一来一回的过程就是我们所熟知的双向绑定。
+在 MVVM 框架中，View(视图) 和 Model(数据) 是不可以直接通讯的，在它们之间存在着 ViewModel 这个中间介充当着观察者的角色。当用户操作 View(视图)，ViewModel 感知到变化，然后通知 Model 发生相应改变；反之当 Model(数据) 发生改变，ViewModel 也能感知到变化，使 View 作出相应更新。这个一来一回的过程就是我们所熟知的双向绑定。
 
 #### MVVM 框架的应用场景
 
@@ -14,11 +14,11 @@ MVVM 框架的好处显而易见：当前端对数据进行操作的时候，可
 
 ### MVVM 框架的简单实现
 
-![](http://oqhtscus0.bkt.clouddn.com/195b692078c1f5c3807182321401b0fa.jpg-600)
+![](http://oqhtscus0.bkt.clouddn.com/ecac404dd0a757b06ae1bd1b5c8212ef.jpg-600)
 
-模拟 Vue 的双向绑定流，实现了一个简单的 [MVVM 框架](https://github.com/MuYunyun/mvvm)，从上图中可以看出虚线方形中就是之前提到的 ViewModal 中间介层，它充当着观察者的角色。另外可以发现双向绑定流中的 View 到 Modal 其实是通过 input 的事件监听函数实现的，如果换成 React(单向绑定流) 的话，它在这一步交给状态管理工具(比如 Redux)来实现。另外双向绑定流中的 Modal 到 View 其实各个 MVVM 框架实现的都是大同小异的，都用到的核心方法是 `Object.defineProperty()`，通过这个方法可以进行数据劫持，当数据发生变化时可以捕捉到相应变化，从而进行后续的处理。
+模拟 Vue 的双向绑定流，实现了一个简单的 [MVVM 框架](https://github.com/MuYunyun/mvvm)，从上图中可以看出虚线方形中就是之前提到的 ViewModel 中间介层，它充当着观察者的角色。另外可以发现双向绑定流中的 View 到 Model 其实是通过 input 的事件监听函数实现的，如果换成 React(单向绑定流) 的话，它在这一步交给状态管理工具(比如 Redux)来实现。另外双向绑定流中的 Model 到 View 其实各个 MVVM 框架实现的都是大同小异的，都用到的核心方法是 `Object.defineProperty()`，通过这个方法可以进行数据劫持，当数据发生变化时可以捕捉到相应变化，从而进行后续的处理。
 
-![](http://oqhtscus0.bkt.clouddn.com/77034821ca0ddd1ed01460f143106ada.jpg-300)
+![](http://oqhtscus0.bkt.clouddn.com/5d4e64ebb45a1f2e913e94aaf3d1c812.jpg-300)
 
 #### Mvvm(入口文件) 的实现
 
@@ -73,7 +73,7 @@ function Mvvm (options) {
 
 #### observer(观察者) 的实现
 
-observer 的职责是监听 Modal(JS 对象) 的变化，最核心的部分就是用到了 Object.defineProperty() 的 get 和 set 方法，当要获取 Modal(JS 对象) 的值时，会自动调用 get 方法；当改动了 Modal(JS 对象) 的值时，会自动调用 set 方法；从而实现了对数据的劫持，代码如下所示。
+observer 的职责是监听 Model(JS 对象) 的变化，最核心的部分就是用到了 Object.defineProperty() 的 get 和 set 方法，当要获取 Model(JS 对象) 的值时，会自动调用 get 方法；当改动了 Model(JS 对象) 的值时，会自动调用 set 方法；从而实现了对数据的劫持，代码如下所示。
 
 ```js
 let data = {
@@ -192,13 +192,13 @@ Watcher.prototype = {
 }
 ```
 
-从代码中可以看到当构造 Watcher 实例时，会调用 get() 方法，接着重点关注 `const value = this.vm.data[this.exp]` 这句，前面说了当要获取 Modal(JS 对象) 的值时，会自动调用 Object.defineProperty 的 get 方法，也就是当执行完这句的时候，Dep.target 的值传进了 observer.js 中的 Object.defineProperty 的 get 方法中。同时也一目了然地在 Watcher.prototype 中发现了 update 方法，其作用即触发 compile 中绑定的回调来更新界面。至此解释了 Observer 中 Dep.target 和 sub.update 的由来。
+从代码中可以看到当构造 Watcher 实例时，会调用 get() 方法，接着重点关注 `const value = this.vm.data[this.exp]` 这句，前面说了当要获取 Model(JS 对象) 的值时，会自动调用 Object.defineProperty 的 get 方法，也就是当执行完这句的时候，Dep.target 的值传进了 observer.js 中的 Object.defineProperty 的 get 方法中。同时也一目了然地在 Watcher.prototype 中发现了 update 方法，其作用即触发 compile 中绑定的回调来更新界面。至此解释了 Observer 中 Dep.target 和 sub.update 的由来。
 
 来归纳下 Watcher 的作用，其充当了 observer 和 compile 的桥梁。
 
 1 在自身实例化的过程中，往订阅器(dep) 中添加自己
 
-2 当 modal 发生变动，dep.notify() 通知时，其能调用自身的 update 函数，并触发 compile 绑定的回调函数实现视图更新
+2 当 model 发生变动，dep.notify() 通知时，其能调用自身的 update 函数，并触发 compile 绑定的回调函数实现视图更新
 
 最后再来看下生成 Watcher 实例的 compile.js 文件。
 
@@ -272,13 +272,13 @@ Compile.prototype = {
     this.modelUpdater(node, val)
     node.addEventListener('input', function (e) {
       const newValue = e.target.value
-      self.vm[exp] = newValue // 实现 view 到 modal 的绑定
+      self.vm[exp] = newValue // 实现 view 到 model 的绑定
     })
   },
 }
 ```
 
-在上述代码的 compileTest 函数中看到了期盼已久的 Watcher 实例化，对 Watcher 作用模糊的朋友可以往上回顾下 Watcher 的作用。另外在 compileModel 函数中看到了本文最开始提到的双向绑定流中的 View 到 Modal 是借助 input 监听事件变化实现的。
+在上述代码的 compileTest 函数中看到了期盼已久的 Watcher 实例化，对 Watcher 作用模糊的朋友可以往上回顾下 Watcher 的作用。另外在 compileModel 函数中看到了本文最开始提到的双向绑定流中的 View 到 Model 是借助 input 监听事件变化实现的。
 
 ### 项目地址
 
