@@ -18,7 +18,7 @@ MVVM 框架的好处显而易见：当前端对数据进行操作的时候，可
 
 模拟 Vue 的双向绑定流，实现了一个简单的 [MVVM 框架](https://github.com/MuYunyun/mvvm)，从上图中可以看出虚线方形中就是之前提到的 ViewModel 中间介层，它充当着观察者的角色。另外可以发现双向绑定流中的 View 到 Model 其实是通过 input 的事件监听函数实现的，如果换成 React(单向绑定流) 的话，它在这一步交给状态管理工具(比如 Redux)来实现。另外双向绑定流中的 Model 到 View 其实各个 MVVM 框架实现的都是大同小异的，都用到的核心方法是 `Object.defineProperty()`，通过这个方法可以进行数据劫持，当数据发生变化时可以捕捉到相应变化，从而进行后续的处理。
 
-![](http://oqhtscus0.bkt.clouddn.com/5d4e64ebb45a1f2e913e94aaf3d1c812.jpg-300)
+![](http://oqhtscus0.bkt.clouddn.com/4b8db3d45cd6f37935e9bec42f0095c7.jpg-300)
 
 #### Mvvm(入口文件) 的实现
 
